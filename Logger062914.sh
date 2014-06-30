@@ -10,8 +10,8 @@ resetLP=0x80 # to be ORed to pcf8574 to turn off LP LED
 
 i2cset -f -y 0 0x27 1 $pcf8574 #pcf8574 init state
 
-cd /HiSpdLogBin
-gpsinit.sh #configure GPS
+
+/HiSpdLogBin/gpsinit.sh #configure GPS
 sleep 10 # wait for gpsd to accquire GPS and begin running 
 		
 printf -v pcf8574 '0x%x' $[pcf8574&setRed1]
@@ -28,7 +28,7 @@ do
         while [ $((sw&2)) = 2]; do #just keep waiting here until SW1 press
                         sleep 1
                         sw=$(i2cget -y 0 0x27)
-                        #echo "In - 1"
+                        echo "In - 1"
         done
 		printf -v pcf8574 '0x%x' $[pcf8574|resetLP]
 		i2cset -f -y 0 0x27 1 $pcf8574
@@ -39,8 +39,8 @@ do
         FilNameGPS=GPSLog$GPSDATE.csv
         FilNameAccel=AccelLog$GPSDATE.csv
        
-		sudo adxlLog -d -f /run/shm/$FilNameAccel
-		sudo gpsLog -d -f /run/shm/$FilNameGPS
+		sudo /HiSpdLogBin/adxlLog -d -f /run/shm/$FilNameAccel
+		sudo /HiSpdLogBin/gpsLog -d -f /run/shm/$FilNameGPS
     
 		#echo "Log Start"
         sleep 5 # Minimum file sample = 5seconds
@@ -51,7 +51,7 @@ do
         while [ $((sw&4)) = 4 ]; do #just keep waiting here until SW2 press
                         sleep 1
                         sw=$(i2cget -y 0 0x27)
-                        #echo "In - 2"
+                        echo "In - 2"
         done
 		
 		printf -v pcf8574 '0x%x' $[pcf8574|resetRed2]
