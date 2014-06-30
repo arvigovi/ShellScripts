@@ -10,7 +10,8 @@ resetLP=0x80 # to be ORed to pcf8574 to turn off LP LED
 
 i2cset -f -y 0 0x27 1 $pcf8574 #pcf8574 init state
 
-/HiSpdLogBin/gpsinit.sh #configure GPS
+cd /HiSpdLogBin
+gpsinit.sh #configure GPS
 sleep 10 # wait for gpsd to accquire GPS and begin running 
 		
 printf -v pcf8574 '0x%x' $[pcf8574&setRed1]
@@ -38,8 +39,8 @@ do
         FilNameGPS=GPSLog$GPSDATE.csv
         FilNameAccel=AccelLog$GPSDATE.csv
        
-		sudo /HiSpdLogBin/adxlLog -d -f /run/shm/$FilNameAccel
-		sudo /HiSpdLogBin/gpsLog -d -f /run/shm/$FilNameGPS
+		sudo adxlLog -d -f /run/shm/$FilNameAccel
+		sudo gpsLog -d -f /run/shm/$FilNameGPS
     
 		#echo "Log Start"
         sleep 5 # Minimum file sample = 5seconds
