@@ -24,12 +24,13 @@ do
 		printf -v pcf8574 '0x%x' $[pcf8574&setLP]
 		i2cset -f -y 0 0x27 1 $pcf8574
         
-		sw=$(i2cget -y 0 0x27)
-        while [ $((sw&2)) = 2]; do #just keep waiting here until SW1 press
+        sw=$(i2cget -y 0 0x27)
+        while [ $((sw&2)) = 2 ]; do #just keep waiting here until SW1 press
                         sleep 1
                         sw=$(i2cget -y 0 0x27)
-                        echo "In - 1"
+                        echo "In - 2"
         done
+		
 		printf -v pcf8574 '0x%x' $[pcf8574|resetLP]
 		i2cset -f -y 0 0x27 1 $pcf8574
 		printf -v pcf8574 '0x%x' $[pcf8574&setRed2] #set Red2 to indicate start of logging
@@ -47,8 +48,9 @@ do
 		
 		printf -v pcf8574 '0x%x' $[pcf8574&setLP]
 		i2cset -f -y 0 0x27 1 $pcf8574
+		
         sw=$(i2cget -y 0 0x27)
-        while [ $((sw&4)) = 4 ]; do #just keep waiting here until SW2 press
+        while [ $((sw&64)) = 64 ]; do #just keep waiting here until SW2 press
                         sleep 1
                         sw=$(i2cget -y 0 0x27)
                         echo "In - 2"
@@ -70,7 +72,7 @@ do
 		sleep 3
 		#long press SW2 to Halt
 		sw=$(i2cget -y 0 0x27)
-		if [ $((sw&4)) = 0 ]; then
+		if [ $((sw&64)) = 0 ]; then
 			printf -v pcf8574 '0x%x' $[pcf8574|resetGreen]
 			i2cset -f -y 0 0x27 1 $pcf8574
 			sudo halt
